@@ -1,0 +1,3 @@
+Name: John doe
+Qualification: Bsc.cs
+Known Language: Kannada, Malayalam.

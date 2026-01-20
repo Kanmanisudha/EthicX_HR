@@ -1,0 +1,9 @@
+{
+    "protected_attributes": ["age", "gender", "religion", "race", "ethnicity", "disability"],
+    "blocked_keywords": {
+        "gender_bias": ["aggressive", "emotional", "bossy", "feisty", "hysterical", "man up"],
+        "age_bias": ["digital native", "energetic", "mature", "fresh blood", "overqualified"],
+        "cultural_bias": ["culture fit", "native english", "accent"]
+    },
+    "critical_actions": ["Reject", "Restrict"]
+}

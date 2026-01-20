@@ -1,0 +1,70 @@
+[
+    {
+        "timestamp": "2026-01-20T04:21:20.972451Z",
+        "audit_id": "AUD-1768863080",
+        "candidate_id": 4,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "BLOCKED",
+        "risk_score": 100,
+        "ai_reasoning": "High Risk (100/100). Manual Review Required.",
+        "detected_strengths": []
+    },
+    {
+        "timestamp": "2026-01-20T04:21:23.590809Z",
+        "audit_id": "AUD-1768863083",
+        "candidate_id": 1,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "APPROVED",
+        "risk_score": 0,
+        "ai_reasoning": "Fast Tracked! Low Risk Score (0/100).",
+        "detected_strengths": [
+            "do-178c (Regulatory)",
+            "dal a (Regulatory)",
+            "dal b (Regulatory)",
+            "do-254 (Regulatory)",
+            "arp4754 (Regulatory)",
+            "airworthiness (Regulatory)",
+            "integrated modular avionics (Arch)",
+            "ima (Arch)",
+            "arinc 653 (Regulatory)",
+            "redundancy (Arch)",
+            "fail-operational (Arch)",
+            "embedded c (Tech)",
+            "spark ada (Tech)",
+            "ada (Tech)",
+            "vxworks (Tech)",
+            "green hills (Tech)",
+            "simulink (Tech)",
+            "scade (Tech)",
+            "vectorcast (Tech)",
+            "hardware-in-the-loop (Tech)",
+            "hil (Tech)",
+            "static analysis (Tech)",
+            "misra (Tech)",
+            "partitioning (Arch)",
+            "requirements traceability (Tech)",
+            "do-178b (Regulatory)",
+            "fail-safe (Arch)"
+        ]
+    },
+    {
+        "timestamp": "2026-01-20T04:21:28.750548Z",
+        "audit_id": "AUD-1768863088",
+        "candidate_id": 2,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "REVIEW",
+        "risk_score": 70,
+        "ai_reasoning": "Moderate Risk (70/100). HR Check Needed.",
+        "detected_strengths": [
+            "do-178c (Regulatory)",
+            "do-254 (Regulatory)",
+            "integrated modular avionics (Arch)",
+            "ima (Arch)",
+            "green hills (Tech)",
+            "vectorcast (Tech)"
+        ]
+    }
+]

@@ -1,0 +1,42 @@
+SARAH YEAGER
+Senior Avionics Software Engineer (555) 123-4567 | sarah.yeager@email.com | San Francisco, CA
+
+PROFESSIONAL SUMMARY
+Highly experienced Senior Flight Software Engineer with 12+ years of experience in safety-critical airborne systems. Proven track record of acting as a Certification Liaison for FAA compliance projects. Deep expertise in DO-178C (DAL A and DAL B) software life cycles, delivering zero-defect code for next-generation aircraft.
+
+TECHNICAL SKILLS
+Standards: DO-178C, DO-254, ARP4754, DAL A, DAL B, FAA Airworthiness.
+
+Architecture: Integrated Modular Avionics (IMA), ARINC 653, Redundancy, Fail-Operational Design.
+
+Languages: Embedded C, SPARK Ada, C++, Assembly.
+
+Tools & RTOS: VxWorks, Green Hills INTEGRITY, Simulink, SCADE, DOORS, VectorCAST.
+
+Verification: MC/DC, Structural Coverage, Hardware-in-the-Loop (HIL), Static Analysis (MISRA C).
+
+PROFESSIONAL EXPERIENCE
+Lead Flight Controls Engineer | AeroNext Innovations Jan 2018 – Present
+
+Spearheaded the development of a Triple Modular Redundancy flight control system for an eVTOL prototype.
+
+Designed deterministic real-time schedules on VxWorks RTOS, ensuring strict partitioning compliance per ARINC 653.
+
+Led the verification team in achieving 100% MC/DC structural coverage for DAL A critical software components.
+
+Managed requirements traceability using DOORS, linking high-level system requirements directly to source code and test cases.
+
+Senior Embedded Software Engineer | Global Avionics Corp June 2012 – Dec 2017
+
+Developed safety-critical engine monitoring software (EICAS) following DO-178B Level B standards.
+
+Implemented fail-safe logic for hydraulic actuator control loops using Embedded C.
+
+Conducted Static Analysis using LDRA to ensure compliance with MISRA coding standards.
+
+Performed Hardware-in-the-Loop (HIL) integration testing, identifying and resolving timing variances in the Time-Triggered Protocol (TTP) bus.
+
+EDUCATION
+Master of Science in Aerospace Engineering Massachusetts Institute of Technology (MIT)
+
+Bachelor of Science in Computer Science University of California, Berkeley

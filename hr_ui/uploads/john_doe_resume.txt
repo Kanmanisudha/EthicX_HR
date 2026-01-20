@@ -1,0 +1,20 @@
+Name: John Doe
+Role: Junior Developer
+Phone: 555-0100
+Email: john.doe@example.com
+
+Summary:
+Recent graduate looking for a role in web development or general software engineering. 
+Energetic and a digital native.
+
+Skills & Limitations:
+- Languages: I know Python and JavaScript.
+- Avionics: I have no experience in DO-178C or DO-254.
+- Safety: I lack knowledge of Integrated Modular Avionics (IMA).
+- Real-Time: I have never used VxWorks or Green Hills.
+- Testing: Zero experience with VectorCAST or LDRA.
+
+Experience:
+Intern at WebStart (2022 - 2023)
+- Built a react website for a local bakery.
+- Learned about agile methodologies.

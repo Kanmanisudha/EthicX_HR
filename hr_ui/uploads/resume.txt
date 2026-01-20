@@ -1,0 +1,34 @@
+Alice Architect
+Lead Avionics Systems Architect
+Email: alice.arch@example.com | Phone: 987-654-3210
+
+PROFESSIONAL SUMMARY
+Results-oriented Systems Architect with 8+ years of experience in defining complex avionics architectures compliant with ARP4754A and DO-178C. Expert in Model-Based Systems Engineering (MBSE) and Requirements Management for flight control and navigation systems.
+
+TECHNICAL SKILLS
+* System Standards: ARP4754A, ARP4761 (Safety Assessment), DO-178C / DO-254 interaction
+* Modeling Tools: Cameo Systems Modeler (No Magic), IBM Rhapsody, MATLAB/Simulink
+* Requirements Management: IBM DOORS, Jama Connect
+* Architecture Languages: SysML (System Modeling Language), UML
+* Key Competencies: Functional Hazard Assessment (FHA), System Safety Assessment (SSA), Interface Control Documents (ICD)
+
+PROFESSIONAL EXPERIENCE
+
+Lead Systems Architect | FutureFlight Aerospace
+Mar 2019 – Present
+* defined the high-level system architecture for a next-gen Autopilot System in accordance with ARP4754A.
+* Developed and maintained System Requirements Data (SRD) in IBM DOORS, ensuring full traceability to customer requirements.
+* Led the transition to Model-Based Systems Engineering (MBSE) using Cameo Systems Modeler and SysML to define system behavior and structure.
+* Collaborated with Safety Engineers to generate Functional Hazard Assessments (FHA) and Preliminary System Safety Assessments (PSSA).
+* Defined hardware-software interfaces (ICDs) for communication buses (ARINC 429, CAN).
+
+Systems Engineer | Global Avionics Inc.
+Jun 2015 – Feb 2019
+* Managed system requirements for a Cockpit Display System.
+* Conducted system-level verification and validation activities.
+* Traced system requirements to software high-level requirements to ensure DO-178C Level B compliance.
+* Created Use Case diagrams and Sequence diagrams to model pilot interactions.
+
+EDUCATION
+M.S. in Systems Engineering, State University
+B.S. in Electrical Engineering

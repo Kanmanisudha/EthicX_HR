@@ -1,0 +1,334 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+
+    .dashboard-card {
+        background: var(--glass-bg);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card {
+        border-left: 5px solid;
+    }
+
+    .table-container {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        background: white;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #6c757d;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .candidate-row:hover {
+        background-color: #f8faff;
+        cursor: default;
+    }
+
+    .search-glass {
+        border-radius: 20px;
+        padding-left: 20px;
+        border: 1px solid #dee2e6;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+</style>
+
+<div class="row mb-4 g-3">
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card stat-card border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0 fw-bold">{{ stats.total }}</h2>
+                    <small class="text-muted fw-bold text-uppercase">Total Candidates</small>
+                </div>
+                <i class="bi bi-people fs-1 text-primary opacity-25"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card stat-card 
+            {% if 'CRITICAL' in system.threat_level %}border-danger{% else %}border-success{% endif %}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="{% if 'CRITICAL' in system.threat_level %}text-danger{% else %}text-success{% endif %} mb-0 fw-bold">
+                        {{ system.integrity }}
+                    </h2>
+                    <small class="text-muted fw-bold text-uppercase">System Integrity</small>
+                </div>
+                <i class="bi bi-shield-check fs-1 opacity-25 {% if 'CRITICAL' in system.threat_level %}text-danger{% else %}text-success{% endif %}"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card stat-card border-warning">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-warning mb-0 fw-bold">{{ system.threat_level }}</h2>
+                    <small class="text-muted fw-bold text-uppercase">Threat Level</small>
+                </div>
+                <i class="bi bi-activity fs-1 text-warning opacity-25"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card stat-card border-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-info mb-0 fw-bold">{{ system.modules_active }}</h2>
+                    <small class="text-muted fw-bold text-uppercase">Active Modules</small>
+                </div>
+                <i class="bi bi-cpu fs-1 text-info opacity-25"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4 mb-4 dashboard-card">
+    <div class="d-flex align-items-center mb-3">
+        <div class="bg-primary text-white rounded-circle p-2 me-2">
+            <i class="bi bi-cloud-upload"></i>
+        </div>
+        <h5 class="mb-0 text-primary fw-bold">Upload New Candidate</h5>
+    </div>
+
+    <form action="{{ url_for('upload_resume') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label small text-muted">Full Name</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" required>
+        </div>
+        
+        <div class="col-md-4">
+            <label class="form-label small text-muted">Target Role</label>
+            <select name="role" class="form-select" required>
+                <option value="" selected disabled>Select Role...</option>
+                <optgroup label="Development">
+                    <option value="Avionics Software Engineer">Avionics Software Engineer</option>
+                    <option value="RTOS Specialist">RTOS Specialist</option>
+                    <option value="MBD Engineer">Model-Based Design Engineer</option>
+                </optgroup>
+                <optgroup label="Verification & Safety">
+                    <option value="Verification Engineer">V&V Engineer (Tester)</option>
+                    <option value="Safety Engineer">System Safety Engineer</option>
+                    <option value="Tool Qual Engineer">Tool Qualification Engineer</option>
+                </optgroup>
+                <optgroup label="Architecture & Compliance">
+                    <option value="Systems Architect">Systems Architect</option>
+                    <option value="Certification Engineer">Certification Engineer (DER Liaison)</option>
+                    <option value="CM Engineer">Configuration Management</option>
+                    <option value="Cybersecurity Engineer">Avionics Cybersecurity</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Resume File</label>
+            <input type="file" name="resume" class="form-control" required>
+        </div>
+        
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-upload"></i></button>
+        </div>
+    </form>
+</div>
+
+<div class="card p-0 border-0 shadow-sm bg-transparent">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            <h5 class="mb-0 text-primary fw-bold me-3"><i class="bi bi-hdd-network"></i> Analysis Pipeline</h5>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary active" onclick="filterTable('all')">All</button>
+                <button class="btn btn-outline-success" onclick="filterTable('APPROVED')">Approved</button>
+                <button class="btn btn-outline-warning" onclick="filterTable('REVIEW')">Review</button>
+                <button class="btn btn-outline-danger" onclick="filterTable('BLOCKED')">Blocked</button>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <input type="text" id="searchInput" class="form-control form-control-sm search-glass" placeholder="🔍 Search pipeline..." style="width: 200px;" onkeyup="searchTable()">
+            
+            <a href="{{ url_for('reset_database') }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to flush all data?');">
+                <i class="bi bi-trash"></i> Flush
+            </a>
+        </div>
+    </div>
+    
+    <div class="table-container">
+        <table class="table table-hover align-middle mb-0" id="candidateTable">
+            <thead>
+                <tr>
+                    <th style="padding-left: 20px;">Candidate Profile</th>
+                    <th>Target Role</th>
+                    <th>AI Status</th>
+                    <th>Match Confidence</th>
+                    <th>Top Strengths</th>
+                    <th class="text-end" style="padding-right: 20px;">Controls</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in candidates %}
+                
+                {% set score = c.match_confidence|default(0) %}
+                {% set txt_color = 'text-warning' %}
+                {% set bar_color = 'bg-warning' %}
+                
+                {% if score >= 80 %}
+                    {% set txt_color = 'text-success' %}
+                    {% set bar_color = 'bg-success' %}
+                {% elif score < 40 %}
+                    {% set txt_color = 'text-danger' %}
+                    {% set bar_color = 'bg-danger' %}
+                {% endif %}
+
+                <tr class="candidate-row" data-status="{{ c.status }}">
+                    <td style="padding-left: 20px;">
+                        <div class="fw-bold text-dark">{{ c.name }}</div>
+                        <div class="small text-muted">
+                            <i class="bi bi-clock"></i> 
+                            {% if c.timestamp %}
+                                {{ c.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %} - {% endif %}
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <span class="badge bg-light text-secondary border">
+                            <i class="bi bi-briefcase-fill me-1"></i> {{ c.role }}
+                        </span>
+                    </td>
+                    
+                    <td>
+                        {% if "APPROVED" in c.status %}
+                            <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success">
+                                <i class="bi bi-check-circle-fill"></i> APPROVED
+                            </span>
+                        {% elif "BLOCKED" in c.status %}
+                            <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger">
+                                <i class="bi bi-shield-lock-fill"></i> BLOCKED
+                            </span>
+                        {% elif "Uploaded" in c.status %}
+                            <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary">
+                                <i class="bi bi-hourglass"></i> PENDING
+                            </span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning">
+                                <i class="bi bi-exclamation-triangle-fill"></i> REVIEW
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td style="width: 20%;">
+                        {% if score > 0 %}
+                            <div class="d-flex align-items-center">
+                                <span class="fw-bold me-2 {{ txt_color }}">{{ score }}%</span>
+                                <div class="progress flex-grow-1" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
+                                    <div class="progress-bar {{ bar_color }}" 
+                                         role="progressbar" 
+                                         style="width: {{ score }}%; border-radius: 4px;">
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <span class="text-muted small fst-italic">Awaiting Scan...</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if c.strengths %}
+                            <div class="text-truncate text-muted small" style="max-width: 200px;" title="{{ c.strengths }}">
+                                <i class="bi bi-stars text-warning"></i> {{ c.strengths }}
+                            </div>
+                        {% else %}
+                            <span class="text-muted small">-</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-end" style="padding-right: 20px;">
+                        <a href="{{ url_for('perform_action', c_id=c.id, action_type='screen') }}" 
+                           class="btn btn-sm btn-primary rounded-pill px-3" title="Run Analysis">
+                           Run AI
+                        </a>
+                        <a href="{{ url_for('delete_candidate', c_id=c.id) }}" 
+                           class="btn btn-sm btn-light text-danger rounded-circle border" title="Delete">
+                           <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 1. Search Function
+    function searchTable() {
+        let input = document.getElementById("searchInput");
+        let filter = input.value.toUpperCase();
+        let table = document.getElementById("candidateTable");
+        let tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) {
+            let tdName = tr[i].getElementsByTagName("td")[0]; // Name Column
+            let tdRole = tr[i].getElementsByTagName("td")[1]; // Role Column
+            if (tdName || tdRole) {
+                let txtValueName = tdName.textContent || tdName.innerText;
+                let txtValueRole = tdRole.textContent || tdRole.innerText;
+                if (txtValueName.toUpperCase().indexOf(filter) > -1 || txtValueRole.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // 2. Filter Button Function
+    function filterTable(statusType) {
+        let table = document.getElementById("candidateTable");
+        let tr = table.getElementsByTagName("tr");
+        
+        // Update active button state
+        let buttons = document.querySelectorAll('.btn-group button');
+        buttons.forEach(btn => btn.classList.remove('active', 'btn-secondary'));
+        event.target.classList.add('active', 'btn-secondary');
+
+        for (let i = 1; i < tr.length; i++) {
+            let rowStatus = tr[i].getAttribute("data-status");
+            if (statusType === 'all') {
+                tr[i].style.display = "";
+            } else {
+                if (rowStatus && rowStatus.includes(statusType)) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+
+{% endblock %}

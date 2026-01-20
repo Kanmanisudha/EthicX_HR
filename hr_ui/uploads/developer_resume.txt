@@ -1,0 +1,31 @@
+Name: Jordan Tech
+Role: Python Backend Developer
+Phone: 555-0122
+Email: jordan.tech@example.com
+
+Professional Summary:
+Innovative Computer Science student with a strong focus on building ethical AI systems and microservices architectures. 
+Passionate about removing bias from hiring processes using Natural Language Processing (NLP).
+
+Technical Skills:
+- Languages: Expert in Python, JavaScript, and SQL.
+- Web Frameworks: Proficient in Flask and Django for building RESTful APIs.
+- AI & NLP: Experience with Spacy, NLTK, and Scikit-learn for text analysis.
+- Tools: Docker, Git, Postman, VS Code.
+- Databases: SQLite, PostgreSQL.
+
+Experience:
+Junior Developer Intern | TechFlow Solutions (2024 - Present)
+- Developed a microservices-based backend using Flask to handle high-volume data requests.
+- Implemented a custom API Gatekeeper to prevent SQL Injection and XSS attacks.
+- Integrated an automated audit logger to track system decisions for legal compliance.
+
+Projects:
+"Ethical-Hire" Automated Screening Tool
+- Built a Python-based resume scanner that uses NLP to detect and remove gender-biased language.
+- Designed a 5-module architecture including an Orchestrator, AI Engine, and Decision Enforcer.
+- Created a dashboard using HTML/CSS/JavaScript to visualize candidate risk scores in real-time.
+
+Education:
+B.Sc. Computer Science | State University (Final Year)
+- Senior Project: "Architecting Fairness in AI-Driven HR Systems"
