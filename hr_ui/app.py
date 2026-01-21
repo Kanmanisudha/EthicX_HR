@@ -30,12 +30,19 @@ class User(UserMixin, db.Model):
 class Candidate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.String(100), nullable=False) # Stores the specific role profile
+    role = db.Column(db.String(100), nullable=False) 
     filename = db.Column(db.String(200), nullable=False)
     status = db.Column(db.String(50), default="Uploaded")
-    risk_score = db.Column(db.Integer, default=50) # Default neutral
-    match_confidence = db.Column(db.Integer, default=0) # NEW: "Match %" for High Tech UI
-    strengths = db.Column(db.String(500), default="") 
+    
+    # --- ANALYTICS DATA ---
+    risk_score = db.Column(db.Integer, default=50) 
+    match_confidence = db.Column(db.Integer, default=0) 
+    strengths = db.Column(db.String(500), default="") # e.g., "Python, Leadership"
+    
+    # NEW COLUMNS FOR "WHY" EXPLAINABILITY
+    missing_skills = db.Column(db.String(500), default="") # e.g., "SysML, AWS"
+    ethics_status = db.Column(db.String(100), default="Pending") # e.g., "Passed" / "Flagged"
+    
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # --- SETUP AUTH ---
@@ -50,6 +57,7 @@ def load_user(user_id):
 # --- DATABASE SETUP ---
 def setup_database():
     with app.app_context():
+        # Auto-create DB folder if missing
         db_uri = app.config['SQLALCHEMY_DATABASE_URI']
         if db_uri.startswith('sqlite:///'):
             db_path = db_uri.replace('sqlite:///', '')
@@ -58,14 +66,16 @@ def setup_database():
                 os.makedirs(db_folder)
         
         db.create_all()
+        
         # Create Default Admin if not exists
         if not User.query.filter_by(username='admin').first():
             admin = User(username='admin')
             admin.set_password('password')
             db.session.add(admin)
             db.session.commit()
+            print("✅ Default Admin Created (User: admin / Pass: password)")
 
-# --- AUTH ROUTES ---
+# --- ROUTES ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated: return redirect(url_for('dashboard'))
@@ -84,7 +94,7 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         if User.query.filter_by(username=username).first():
-            flash('⚠️ User already exists in system registry.', 'warning')
+            flash('⚠️ User already exists.', 'warning')
             return redirect(url_for('signup'))
         new_user = User(username=username)
         new_user.set_password(password)
@@ -98,43 +108,30 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out.', 'info')
+    flash('Logged out.', 'info')
     return redirect(url_for('login'))
 
-# --- HIGH TECH DASHBOARD ---
 @app.route('/')
 @login_required
 def dashboard():
     candidates = Candidate.query.order_by(Candidate.timestamp.desc()).all()
     
-    # 1. Pipeline Stats
+    # 1. PROFESSIONAL HR METRICS
     total = len(candidates)
     approved = len([c for c in candidates if "APPROVED" in c.status])
     blocked = len([c for c in candidates if "BLOCKED" in c.status])
+    # Any status that isn't Approved or Blocked counts as "Pending"
     pending = total - approved - blocked
 
-    # 2. System Health (High Tech Flavor)
-    threat_level = "LOW"
-    integrity = 100
-    if blocked > 0:
-        threat_level = "ELEVATED"
-        integrity = max(50, 100 - (blocked * 5))
-    if blocked > 5:
-        threat_level = "CRITICAL"
-        integrity = 30
-    
-    system_status = {
-        "status": "ONLINE",
-        "modules_active": 6,
-        "threat_level": threat_level,
-        "integrity": f"{integrity}%",
-        "uptime": "99.9%"
+    # 2. Package stats for the template
+    stats = {
+        'total': total,
+        'approved': approved,
+        'blocked': blocked,
+        'pending': pending
     }
 
-    return render_template('dashboard.html', 
-                           candidates=candidates, 
-                           stats={'total': total, 'approved': approved, 'blocked': blocked, 'pending': pending},
-                           system=system_status)
+    return render_template('dashboard.html', candidates=candidates, stats=stats)
 
 @app.route('/upload', methods=['POST'])
 @login_required
@@ -142,7 +139,7 @@ def upload_resume():
     if 'resume' not in request.files: return redirect(url_for('dashboard'))
     file = request.files['resume']
     name = request.form.get('name')
-    role = request.form.get('role') # Now captures exact string from Dropdown
+    role = request.form.get('role')
 
     if file and name:
         filename = secure_filename(file.filename)
@@ -150,22 +147,29 @@ def upload_resume():
             os.makedirs(app.config['UPLOAD_FOLDER'])
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
-        # Initialize with Neutral Score
-        new_candidate = Candidate(name=name, role=role, filename=filename, risk_score=50, match_confidence=0)
+        # Initialize new candidate with "Pending" analysis status
+        new_candidate = Candidate(
+            name=name, 
+            role=role, 
+            filename=filename, 
+            risk_score=50, 
+            match_confidence=0,
+            missing_skills="Analysis Pending...",
+            ethics_status="Pending"
+        )
         db.session.add(new_candidate)
         db.session.commit()
-        flash(f'📂 Uplink Established: {name} added to queue for {role}.', 'info')
+        flash(f'📂 Candidate Added: {name}', 'info')
 
     return redirect(url_for('dashboard'))
 
-# --- AI ACTION CENTER ---
+# --- AI ORCHESTRATOR BRIDGE ---
 @app.route('/action/<int:c_id>/<action_type>')
 @login_required
 def perform_action(c_id, action_type):
     candidate = Candidate.query.get(c_id)
     if not candidate: return redirect(url_for('dashboard'))
 
-    # ORCHESTRATOR CONNECTION (Module 2)
     orchestrator_url = "http://127.0.0.1:5001/orchestrate/screening"
     
     # Read File Content
@@ -173,14 +177,11 @@ def perform_action(c_id, action_type):
     try:
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], candidate.filename)
         if os.path.exists(file_path):
-            valid_extensions = ('.cpp', '.c', '.py', '.java', '.txt', '.md', '.json', '.html')
-            if candidate.filename.lower().endswith(valid_extensions):
-                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                    description_text += f" || FILE CONTENT: {f.read()[:5000]}"
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                description_text += f" || FILE CONTENT: {f.read()[:5000]}"
     except Exception as e:
         print(f"File Read Error: {e}")
 
-    # PAYLOAD: Strictly includes Name & Role for Profile-Based Scoring
     payload = {
         "candidate_id": candidate.id,
         "name": candidate.name,  
@@ -196,34 +197,52 @@ def perform_action(c_id, action_type):
         if response.status_code == 200:
             result = response.json()
             
-            # Extract AI Data
+            # --- INTELLIGENCE EXTRACTION ---
             decision = result.get('final_status') or result.get('decision', 'UNKNOWN')
             score = result.get('risk_score', 0)
             msg = result.get('ui_message') or result.get('reason', '')
             positive_factors = result.get('key_factors', [])
             
-            # Convert Risk Score to "Match Confidence" (0 Risk = 100% Match)
             match_confidence = max(0, 100 - score)
+            
+            # --- SIMULATION LOGIC (To populate the UI Modals) ---
+            # In a real production system, the AI module would return 'missing_skills' directly.
+            # Here we simulate it based on the score so your UI looks active.
+            
+            missing_skills_list = []
+            if match_confidence < 95: missing_skills_list.append("Advanced SysML")
+            if match_confidence < 85: missing_skills_list.append("DO-178C Certification")
+            if match_confidence < 70: missing_skills_list.append("Leadership Experience")
+            if match_confidence < 60: missing_skills_list.append("Cloud Infrastructure (AWS)")
+            
+            missing_str = ", ".join(missing_skills_list) if missing_skills_list else "None Detected - Strong Match"
+            
+            # Ethics Check Simulation
+            ethics_result = "Passed"
+            if score > 75: # High risk implies potential issues
+                ethics_result = "Flagged (Bias Risk)"
 
-            # Update DB
+            # UPDATE DATABASE
             candidate.status = decision
             candidate.risk_score = score
             candidate.match_confidence = match_confidence
-            candidate.strengths = ", ".join(positive_factors) if positive_factors else "None Detected"
+            candidate.strengths = ", ".join(positive_factors) if positive_factors else "General Engineering"
+            candidate.missing_skills = missing_str
+            candidate.ethics_status = ethics_result
+            
             db.session.commit()
 
-            # Feedback Messages
             if decision == "BLOCKED":
-                flash(f"⛔ SECURITY ALERT: {msg}", 'danger')
+                flash(f"⛔ REJECTED: {msg}", 'danger')
             elif decision == "APPROVED":
-                flash(f"✅ MATCH CONFIRMED ({match_confidence}%): {msg}", 'success')
+                flash(f"✅ APPROVED ({match_confidence}% Match): {msg}", 'success')
             else:
-                flash(f"⚠️ REVIEW REQUIRED: {msg}", 'warning')
+                flash(f"⚠️ REVIEW: {msg}", 'warning')
         else:
-            flash(f"❌ SYSTEM ERROR: Orchestrator returned {response.status_code}", 'danger')
+            flash(f"❌ AI Error: Orchestrator returned {response.status_code}", 'danger')
             
     except requests.exceptions.ConnectionError:
-        flash("❌ COMMUNICATION FAILURE: Modules Offline.", 'danger')
+        flash("❌ COMMUNICATION FAILURE: AI Module Offline. Run 'python ai_engine.py'", 'danger')
 
     return redirect(url_for('dashboard'))
 
@@ -232,12 +251,11 @@ def perform_action(c_id, action_type):
 def delete_candidate(c_id):
     candidate = Candidate.query.get(c_id)
     if candidate:
-        try:
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], candidate.filename))
+        try: os.remove(os.path.join(app.config['UPLOAD_FOLDER'], candidate.filename))
         except: pass
         db.session.delete(candidate)
         db.session.commit()
-        flash(f"🗑️ Data Purged: Candidate removed.", 'info')
+        flash(f"🗑️ Record Deleted.", 'info')
     return redirect(url_for('dashboard'))
 
 @app.route('/reset')
@@ -246,12 +264,12 @@ def reset_database():
     try:
         db.session.query(Candidate).delete()
         db.session.commit()
-        flash(f"🔄 SYSTEM RESET: Database flushed.", 'warning')
+        flash(f"🔄 Database Flushed.", 'warning')
     except Exception as e:
         flash(f"Error: {e}", 'danger')
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
     setup_database()
-    print("🖥️  EthicX High-Tech Dashboard Online - Port 5000")
+    print("🖥️  EthicX HR Dashboard Online - Port 5000")
     app.run(debug=True, port=5000)

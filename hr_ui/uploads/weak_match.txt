@@ -1,0 +1,30 @@
+Charlie Coder
+Full Stack Web Developer
+Email: charlie.web@example.com
+
+SUMMARY
+Creative Web Developer with experience in building responsive websites and mobile apps. Passionate about UI/UX design and modern JavaScript frameworks.
+
+SKILLS
+* Languages: JavaScript, HTML5, CSS3, Ruby on Rails
+* Frameworks: React.js, Angular, Node.js
+* Tools: VS Code, Photoshop, Figma, MongoDB
+* Cloud: AWS EC2, Heroku
+
+EXPERIENCE
+
+Web Developer | Creative Agency XYZ
+2021 – Present
+* Built dynamic single-page applications (SPA) using React.js.
+* Optimized website performance and SEO, increasing traffic by 20%.
+* Collaborated with designers to implement pixel-perfect UI designs in CSS/SASS.
+* Managed SQL databases and RESTful APIs for e-commerce clients.
+
+Junior Developer | Tech Startup
+2019 – 2021
+* Maintained company website and fixed front-end bugs.
+* Wrote automated UI tests using Selenium.
+
+EDUCATION
+B.A. Graphic Design
+Bootcamp Certificate in Web Development

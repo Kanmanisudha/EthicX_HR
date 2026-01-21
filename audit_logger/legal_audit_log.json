@@ -66,5 +66,73 @@
             "green hills (Tech)",
             "vectorcast (Tech)"
         ]
+    },
+    {
+        "timestamp": "2026-01-20T07:21:46.633975Z",
+        "audit_id": "AUD-1768873906",
+        "candidate_id": 1,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "REVIEW",
+        "risk_score": 35,
+        "ai_reasoning": "Moderate Risk (35/100). HR Check Needed.",
+        "detected_strengths": [
+            "do-178c (Critical)"
+        ]
+    },
+    {
+        "timestamp": "2026-01-20T08:07:27.935811Z",
+        "audit_id": "AUD-1768876647",
+        "candidate_id": 2,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "APPROVED",
+        "risk_score": 0,
+        "ai_reasoning": "Fast Tracked! Low Risk Score (0/100).",
+        "detected_strengths": [
+            "c++ (Bonus)",
+            "rtos (High Value)",
+            "do-178c (Critical)",
+            "embedded c (Critical)",
+            "python (Bonus)",
+            "ada (Critical)",
+            "misra (Critical)",
+            "git (Bonus)",
+            "vxworks (High Value)",
+            "green hills (High Value)",
+            "safe coding (Critical)"
+        ]
+    },
+    {
+        "timestamp": "2026-01-20T08:09:24.993817Z",
+        "audit_id": "AUD-1768876764",
+        "candidate_id": 3,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "BLOCKED",
+        "risk_score": 100,
+        "ai_reasoning": "High Risk (100/100). Manual Review Required.",
+        "detected_strengths": []
+    },
+    {
+        "timestamp": "2026-01-20T08:11:32.459064Z",
+        "audit_id": "AUD-1768876892",
+        "candidate_id": 4,
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "APPROVED",
+        "risk_score": 0,
+        "ai_reasoning": "Fast Tracked! Low Risk Score (0/100).",
+        "detected_strengths": [
+            "do-178c (Critical)",
+            "embedded c (Critical)",
+            "spark ada (Critical)",
+            "ada (Critical)",
+            "c++ (Bonus)",
+            "rtos (High Value)",
+            "vxworks (High Value)",
+            "green hills (High Value)",
+            "misra (Critical)"
+        ]
     }
 ]

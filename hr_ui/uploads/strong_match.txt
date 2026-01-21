@@ -1,0 +1,31 @@
+Bob Builder
+Senior Avionics Software Engineer
+Email: bob.builder@example.com | Phone: 555-0199
+
+PROFESSIONAL SUMMARY
+Dedicated Avionics Software Engineer with 6+ years of experience in full lifecycle software development for safety-critical airborne systems. Expert in C/C++ embedded programming, Real-Time Operating Systems (RTOS), and DO-178C Level A certification processes.
+
+TECHNICAL SKILLS
+* Programming: Embedded C, C++, Python, Ada
+* Standards: DO-178C, ARINC 653, ARINC 429, MISRA C
+* Tools: IBM DOORS, LDRA, VectorCAST, Git, Jenkins
+* RTOS: VxWorks, Green Hills Integrity, Deos
+
+PROFESSIONAL EXPERIENCE
+
+Senior Software Engineer | AeroTech Solutions
+Jan 2020 – Present
+* Developed Flight Control Computer (FCC) software modules in Embedded C following DO-178C Level A guidelines.
+* Integrated software with VxWorks RTOS on PowerPC architecture.
+* Performed structural coverage analysis (SCA) and unit testing using VectorCAST.
+* Automated build and test pipelines using Python and Jenkins, reducing regression testing time by 40%.
+* Mentored junior engineers on MISRA C coding standards and safe coding practices.
+
+Avionics Developer | SkyHigh Systems
+Jun 2017 – Dec 2019
+* Designed and coded ARINC 664 (AFDX) communication drivers.
+* Managed requirements traceability from system-level to code-level using IBM DOORS.
+* Conducted hardware-software integration testing on target hardware.
+
+EDUCATION
+B.S. Computer Engineering, Tech University
