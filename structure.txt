@@ -1,0 +1,27 @@
+ETHICX_HR/
+│
+├── 01_USER_INTERFACE/              <-- (Step 1: The User sees this)
+│   └── hr_ui/                      (Move 'hr_ui' here)
+│
+├── 02_WEB_LAYER/                   <-- (Step 2: The Browser hits this server)
+│   └── web_operating_layer/        (Move 'web_operating_layer' here)
+│
+├── 03_API_GATEWAY/                 <-- (Step 3: Traffic is routed here)
+│   └── api_gatekeeper/             (Move 'api_gatekeeper' here)
+│
+├── 04_BUSINESS_SERVICES/           <-- (Step 4: The work gets done here)
+│   ├── applicant_service/          (Move NEW 'applicant_service' here)
+│   ├── ethicx_hr/                  (Move 'ethicx_hr' here)
+│   └── sanitizer_module/           (Move NEW 'sanitizer_module' here)
+│
+├── 05_CORE_ENGINE/                 <-- (Step 5: The AI/Logic is processed)
+│   ├── decision_enforcer/          (Move 'decision_enforcer' here)
+│   └── ethicx_engine/              (Move 'ethicx_engine' here)
+│
+├── 06_INFRASTRUCTURE/              <-- (Step 6: Data is saved/logged)
+│   ├── audit_logger/               (Move 'audit_logger' here)
+│   └── shared_data/                (Move 'shared_data' here)
+│
+├── venv/                           (Do not move)
+├── .gitignore                      (Do not move)
+└── run_system.py                   (Your startup script)
