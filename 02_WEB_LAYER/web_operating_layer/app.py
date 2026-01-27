@@ -1,73 +1,77 @@
-import time
+import os
 import uuid
 import requests
 from flask import Flask, request, jsonify
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) # Allows the UI to connect to this orchestrator
 
 # --- CONFIGURATION ---
-# Connects to Module 3 (Gatekeeper) on Port 5004
-GATEKEEPER_URL = "http://127.0.0.1:5004/intercept"
+# Connects to Module 3 (Gatekeeper)
+# Ensure this matches the Gatekeeper's port in your run_system.py
+GATEKEEPER_URL = "http://127.0.0.1:5000/intercept" 
 
 @app.route("/")
 def home():
-    return "EthicX-HR Web Operating Layer (Module 2) is running on Port 5001"
+    current_port = os.environ.get('FLASK_RUN_PORT', 5001)
+    return f"EthicX-HR Web Operating Layer (Module 2) active on Port {current_port}"
 
 @app.route("/orchestrate/screening", methods=["POST"])
 def orchestrate_screening():
+    """
+    Nature: The 'System Brain' for data flow. 
+    It assigns tracking IDs and standardizes data before security checks.
+    """
     try:
-        # FEATURE 1: Input Validation
-        # We grab the raw data from the UI
         incoming_request = request.json
-        print(f"\n📥 [Module 2] Received Request for Candidate ID: {incoming_request.get('candidate_id')}")
+        if not incoming_request:
+            return jsonify({"error": "No data provided"}), 400
 
-        # FEATURE 2: Legal Audit Trail
-        # We generate a unique ID (UUID) for this specific transaction.
-        # This allows us to track this specific resume's journey forever.
+        print(f"\n📥 [Module 2] Orchestrating Request for Candidate: {incoming_request.get('candidate_id', 'Unknown')}")
+
+        # FEATURE: Legal Audit Trail (UUID Generation)
         orchestration_id = str(uuid.uuid4())
         
-        # FEATURE 3: Data Standardization
-        # We create a new, clean packet of data. We don't just blindly forward 
-        # what the UI sent. We structure it strictly.
+        # FEATURE: Data Standardization
+        # We wrap the UI data in a formal system packet
         standardized_payload = {
             "orchestration_id": orchestration_id,
-            "timestamp": datetime.utcnow().isoformat(), # Adds precise timing
-            "origin": "HR_UI",
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "origin": "HR_PORTAL_WEB",
             "candidate_id": incoming_request.get("candidate_id"),
-            "action_type": incoming_request.get("action"),
-            "requested_by": incoming_request.get("requested_by"),
+            "role": incoming_request.get("role"),
+            "action_type": incoming_request.get("action", "SCREENING"),
+            "requested_by": incoming_request.get("requested_by", "HR_ADMIN"),
             "description": incoming_request.get("description", "") 
         }
 
-        print(f"🔄 [Module 2] Assigned ID: {orchestration_id}")
-        print(f"🚀 [Module 2] Forwarding to Gatekeeper (Port 5004)...")
+        print(f"🔄 [Module 2] Assigned Trace ID: {orchestration_id}")
+        print(f"🚀 [Module 2] Forwarding to Gatekeeper (Security Layer)...")
 
-        # FEATURE 4: Fail-Safe Networking
-        # We try to talk to the Gatekeeper. If it fails, we catch it.
+        # FEATURE: Fail-Safe Networking
         try:
-            response = requests.post(GATEKEEPER_URL, json=standardized_payload)
+            # Forward to Gatekeeper (Port 5000/5004)
+            response = requests.post(GATEKEEPER_URL, json=standardized_payload, timeout=10)
             
-            # FEATURE 5: Transparent Pass-Through
-            # We return the EXACT response from the AI (including risk scores)
-            # so the UI gets the full picture.
-            print(f"✅ [Module 2] Received Response from Gatekeeper: {response.status_code}")
+            print(f"✅ [Module 2] Downstream Response: {response.status_code}")
             return jsonify(response.json()), response.status_code
 
         except requests.exceptions.ConnectionError:
-            # FEATURE 6: Graceful Failure
-            # If the backend is dead, we tell the UI politely instead of crashing.
-            print("❌ [Module 2] ERROR: Connection Refused. Is Module 3 (Port 5004) running?")
+            print("❌ [Module 2] ERROR: Gatekeeper is offline.")
             return jsonify({
-                "decision": "ERROR",
+                "final_status": "SYSTEM_ERROR",
                 "risk_score": 0,
-                "reason": "System Error: Gatekeeper (Security Module 3) is down."
+                "ui_message": "System Error: Gatekeeper (Security Module) is currently down."
             }), 503
 
     except Exception as e:
         print(f"❌ [Module 2] Internal Error: {e}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Orchestration Failed"}), 500
 
 if __name__ == "__main__":
-    print("✅ Web Operating Layer running on Port 5001")
-    app.run(host="127.0.0.1", port=5001, debug=True)
+    # Orchestrator usually runs on Port 5001
+    port = int(os.environ.get("FLASK_RUN_PORT", 5001))
+    print(f"✅ Web Operating Layer initializing on Port {port}")
+    app.run(host="0.0.0.0", port=port, debug=True)
