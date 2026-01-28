@@ -134,5 +134,16 @@
             "green hills (High Value)",
             "misra (Critical)"
         ]
+    },
+    {
+        "timestamp": "2026-01-27T15:22:57.789691Z",
+        "audit_id": "AUD-1769507577",
+        "candidate_id": "Unknown",
+        "candidate_name": "Unknown",
+        "applied_role": "Unknown",
+        "final_verdict": "REVIEW",
+        "risk_score": 50,
+        "ai_reasoning": "\ud83d\udfe1 Moderate Risk (50/100). Requires manual HR validation.",
+        "detected_strengths": []
     }
 ]

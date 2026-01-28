@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-10 text-center">
+        <h1 class="display-4 fw-bold mb-2">Welcome to <span class="text-primary">EthicX</span></h1>
+        <p class="lead mb-5 opacity-75">AI-Powered Ethical Governance for Avionics Recruitment</p>
+        
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-5">
+                <div class="glass-card p-5 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-person-workspace display-1 text-primary mb-4"></i>
+                        <h2 class="fw-bold">HR Portal</h2>
+                        <p class="text-muted mb-4">Access the administrative dashboard to manage candidates, run deep AI scans, and view ethical audit logs.</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login as HR</a>
+                        <a href="{{ url_for('signup') }}" class="btn btn-outline-primary btn-sm border-0">Create Admin Account</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="glass-card p-5 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-file-earmark-person display-1 text-success mb-4"></i>
+                        <h2 class="fw-bold">Candidate Portal</h2>
+                        <p class="text-muted mb-4">Verify your resume against our industry standards, get instant AI feedback, and be fast-tracked to our recruiters.</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('candidate_verify') }}" class="btn btn-success btn-lg">Verify Resume</a>
+                        <a href="{{ url_for('candidate_verify') }}" class="btn btn-outline-success btn-sm border-0">Candidate Login</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

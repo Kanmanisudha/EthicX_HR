@@ -4,11 +4,11 @@ import sys
 import os
 
 # --- BASE DIRECTORY ---
-# This ensures we always find the folders correctly on Windows
+# This locates the root "EthicX_HR" folder
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- CONFIGURATION: Define your 6 Tiers ---
-# Updated to match your specific nested folder structure
+# Updated paths to match your folder structure exactly
 SERVICES = [
     {
         "name": "TIER 6: Audit Logger",    
@@ -17,27 +17,27 @@ SERVICES = [
     },
     {
         "name": "TIER 5B: Enforcer",      
-        "path": "05_CORE_ENGINE/decision_enforcer/app.py", 
+        "path": "05_CORE_ENGINE/decision_enforcer/app.py",        
         "port": 5003
     },
     {
         "name": "TIER 5A: EthicX Engine", 
-        "path": "05_CORE_ENGINE/ethicx_engine/main.py", 
+        "path": "05_CORE_ENGINE/ethicx_engine/main.py",           
         "port": 5002
     },
     {
         "name": "TIER 3: Gatekeeper",     
-        "path": "03_API_GATEWAY/api_gatekeeper/app.py", 
+        "path": "03_API_GATEWAY/api_gatekeeper/app.py",           
         "port": 5004
     },
     {
         "name": "TIER 2: Web Operating",  
-        "path": "02_WEB_LAYER/web_operating_layer/app.py", 
+        "path": "02_WEB_LAYER/web_operating_layer/app.py",        
         "port": 5001
     },
     {
         "name": "TIER 1: User Interface", 
-        "path": "01_USER_INTERFACE/hr_ui/app.py", 
+        "path": "01_USER_INTERFACE/hr_ui/app.py",                
         "port": 8000
     },
 ]
@@ -49,17 +49,16 @@ def launch_services():
     print("-" * 65)
 
     for service in SERVICES:
-        # Construct the Absolute Path using Windows separators
+        # Convert path to Windows format
         full_path = os.path.join(BASE_DIR, service['path'].replace('/', os.sep))
         
         if not os.path.exists(full_path):
             print(f"❌ ERROR: File not found at: {full_path}")
-            print(f"   Please check if the folder or filename is spelled correctly.\n")
             continue
 
         print(f"⏳ Launching {service['name']} on Port {service['port']}...")
         
-        # Start the process using the current Python interpreter
+        # Start the process using the current Python environment
         process = subprocess.Popen(
             [sys.executable, full_path],
             env={**os.environ, "FLASK_RUN_PORT": str(service['port'])},
@@ -67,7 +66,7 @@ def launch_services():
             stderr=None
         )
         processes.append(process)
-        # Give each service 2 seconds to bind to the port
+        # Give each tier time to initialize
         time.sleep(2)
 
     print("-" * 65)

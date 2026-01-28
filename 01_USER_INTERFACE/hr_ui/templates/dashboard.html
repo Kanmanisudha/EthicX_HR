@@ -1,371 +1,96 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-<style>
-    :root {
-        --glass-bg: rgba(255, 255, 255, 0.98);
-        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
-    
-    .dashboard-card {
-        background: var(--glass-bg);
-        border: 1px solid rgba(0,0,0,0.05);
-        border-radius: 12px;
-        box-shadow: var(--card-shadow);
-        transition: transform 0.2s;
-    }
-
-    .dashboard-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .stat-card {
-        border-left: 5px solid;
-    }
-
-    .table-container {
-        border-radius: 12px;
-        overflow: hidden;
-        background: white;
-        box-shadow: var(--card-shadow);
-    }
-
-    .table thead th {
-        background-color: #f8f9fa;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-        color: #6c757d;
-        border-bottom: 2px solid #e9ecef;
-    }
-
-    /* Modal Styles */
-    .modal-header { background-color: #f8f9fa; }
-    .circular-chart { display: block; margin: 10px auto; max-width: 80%; max-height: 250px; }
-    .circle-bg { fill: none; stroke: #eee; stroke-width: 3.8; }
-    .circle { fill: none; stroke-width: 2.8; stroke-linecap: round; animation: progress 1s ease-out forwards; }
-    @keyframes progress { 0% { stroke-dasharray: 0 100; } }
-</style>
-
-<div class="row mb-4 g-3">
-    <div class="col-md-3">
-        <div class="card p-3 dashboard-card stat-card border-primary">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="text-primary mb-0 fw-bold">{{ stats.total }}</h2>
-                    <small class="text-muted fw-bold text-uppercase">Total Applications</small>
-                </div>
-                <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
-                    <i class="bi bi-people-fill fs-4 text-primary"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="card p-3 dashboard-card stat-card border-warning">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="text-warning mb-0 fw-bold">{{ stats.pending }}</h2>
-                    <small class="text-muted fw-bold text-uppercase">Pending Review</small>
-                </div>
-                <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
-                    <i class="bi bi-hourglass-split fs-4 text-warning"></i>
-                </div>
-            </div>
-        </div>
+<div class="glass-card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold m-0"><i class="bi bi-grid-1x2 text-primary me-2"></i> HR Command Center</h3>
+        <a href="{{ url_for('reset_database') }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Flush system data? This cannot be undone.')">Flush DB</a>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 dashboard-card stat-card border-success">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="text-success mb-0 fw-bold">{{ stats.approved }}</h2>
-                    <small class="text-muted fw-bold text-uppercase">Approved</small>
-                </div>
-                <div class="bg-success bg-opacity-10 p-3 rounded-circle">
-                    <i class="bi bi-check-lg fs-4 text-success"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card p-3 dashboard-card stat-card border-danger">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="text-danger mb-0 fw-bold">{{ stats.blocked }}</h2>
-                    <small class="text-muted fw-bold text-uppercase">Rejected</small>
-                </div>
-                <div class="bg-danger bg-opacity-10 p-3 rounded-circle">
-                    <i class="bi bi-x-lg fs-4 text-danger"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card p-4 mb-4 dashboard-card">
-    <div class="d-flex align-items-center mb-3">
-        <div class="bg-primary text-white rounded-circle p-2 me-2">
-            <i class="bi bi-cloud-upload"></i>
-        </div>
-        <h5 class="mb-0 text-primary fw-bold">Upload New Candidate</h5>
-    </div>
-
-    <form action="{{ url_for('upload_resume') }}" method="POST" enctype="multipart/form-data" class="row g-3">
-        <div class="col-md-4">
-            <label class="form-label small text-muted">Full Name</label>
-            <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" required>
-        </div>
-        
-        <div class="col-md-4">
-            <label class="form-label small text-muted">Target Role</label>
-            <select name="role" class="form-select" required>
-                <option value="" selected disabled>Select Role...</option>
-                <optgroup label="Development">
-                    <option value="Avionics Software Engineer">Avionics Software Engineer</option>
-                    <option value="RTOS Specialist">RTOS Specialist</option>
-                    <option value="MBD Engineer">Model-Based Design Engineer</option>
-                </optgroup>
-                <optgroup label="Verification & Safety">
-                    <option value="Verification Engineer">V&V Engineer (Tester)</option>
-                    <option value="Safety Engineer">System Safety Engineer</option>
-                    <option value="Tool Qual Engineer">Tool Qualification Engineer</option>
-                </optgroup>
-                <optgroup label="Architecture & Compliance">
-                    <option value="Systems Architect">Systems Architect</option>
-                    <option value="Certification Engineer">Certification Engineer (DER Liaison)</option>
-                    <option value="CM Engineer">Configuration Management</option>
-                    <option value="Cybersecurity Engineer">Avionics Cybersecurity</option>
-                </optgroup>
-            </select>
-        </div>
-
+    <div class="row g-3 text-center mb-4">
+        {% for label, val, color in [('Total', stats.total, 'primary'), ('Pending', stats.pending, 'warning'), ('Approved', stats.approved, 'success'), ('Flagged', stats.blocked, 'danger')] %}
         <div class="col-md-3">
-            <label class="form-label small text-muted">Resume File</label>
-            <input type="file" name="resume" class="form-control" required>
+            <div class="p-3 border rounded-3 bg-white shadow-sm">
+                <div class="small text-muted text-uppercase fw-bold">{{ label }}</div>
+                <div class="h2 fw-bold text-{{ color }} mb-0">{{ val }}</div>
+            </div>
         </div>
-        
-        <div class="col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-upload"></i></button>
-        </div>
-    </form>
-</div>
-
-<div class="card p-0 border-0 shadow-sm bg-transparent">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0 text-primary fw-bold"><i class="bi bi-list-task"></i> Candidate Pipeline</h5>
-        <div class="d-flex gap-2">
-            <input type="text" id="searchInput" class="form-control form-control-sm search-glass" placeholder="🔍 Search pipeline..." style="width: 200px;" onkeyup="searchTable()">
-            
-            <a href="{{ url_for('reset_database') }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to flush all data?');">
-                <i class="bi bi-trash"></i> Flush
-            </a>
-        </div>
+        {% endfor %}
     </div>
-    
-    <div class="table-container">
-        <table class="table table-hover align-middle mb-0" id="candidateTable">
-            <thead>
+
+    <div class="p-4 mb-4 rounded-3 border bg-white shadow-sm">
+        <h5 class="mb-3 fw-bold"><i class="bi bi-cloud-arrow-up-fill text-primary"></i> Upload New Candidate</h5>
+        <form action="{{ url_for('upload_resume') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="name" class="form-control" placeholder="Candidate Name" required>
+            </div>
+            <div class="col-md-4">
+                <select name="role" class="form-select">
+                    <option value="Avionics Software Engineer">Avionics Software Engineer</option>
+                    <option value="Embedded Systems Dev">Embedded Systems Dev</option>
+                    <option value="Systems Architect">Systems Architect</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="file" name="resume" class="form-control" required>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-upload"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-responsive bg-white rounded-3 shadow-sm border p-0 overflow-hidden">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light text-secondary small">
                 <tr>
-                    <th class="ps-4">Candidate Profile</th>
-                    <th>Target Role</th>
-                    <th>AI Status</th>
-                    <th>Match Confidence</th>
-                    <th>Top Strengths</th>
-                    <th class="text-end pe-4">Controls</th>
+                    <th class="ps-4 py-3">CANDIDATE</th>
+                    <th>TARGET ROLE</th>
+                    <th>AI ETHICS STATUS</th>
+                    <th>MATCH %</th>
+                    <th class="text-end pe-4">ACTION</th>
                 </tr>
             </thead>
             <tbody>
                 {% for c in candidates %}
-                
-                {% set score = c.match_confidence|default(0) %}
-                {% set color_class = 'warning' %}
-                {% if score >= 80 %} {% set color_class = 'success' %}
-                {% elif score < 40 %} {% set color_class = 'danger' %} {% endif %}
-
-                <tr class="candidate-row" data-status="{{ c.status }}">
+                <tr>
                     <td class="ps-4">
                         <div class="fw-bold text-dark">{{ c.name }}</div>
-                        <div class="small text-muted">
-                            <i class="bi bi-clock"></i> 
-                            {% if c.timestamp %}
-                                {{ c.timestamp.strftime('%Y-%m-%d %H:%M') }}
-                            {% else %} - {% endif %}
+                        {% if c.is_self_applied %}
+                            <span class="badge bg-success small">Self-Verified</span>
+                        {% else %}
+                            <span class="badge bg-secondary small">Internal Upload</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge bg-light text-dark border">{{ c.role }}</span></td>
+                    <td>
+                        {% if 'BLOCKED' in c.status %}<span class="badge bg-danger">Flagged</span>
+                        {% elif 'APPROVED' in c.status %}<span class="badge bg-success">Passed</span>
+                        {% else %}<span class="badge bg-warning text-dark">Pending Scan</span>{% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                <div class="progress-bar bg-info" style="width: {{ c.match_confidence }}%"></div>
+                            </div>
+                            <small class="fw-bold">{{ c.match_confidence }}%</small>
                         </div>
                     </td>
-                    
-                    <td><span class="badge bg-light text-secondary border">{{ c.role }}</span></td>
-                    
-                    <td>
-                        {% if "APPROVED" in c.status %}
-                            <span class="badge bg-success bg-opacity-10 text-success border border-success px-3">HIRED</span>
-                        {% elif "BLOCKED" in c.status %}
-                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3">REJECTED</span>
-                        {% else %}
-                            <span class="badge bg-warning bg-opacity-10 text-dark border border-warning px-3">PENDING</span>
-                        {% endif %}
-                    </td>
-
-                    <td style="width: 20%;">
-                        {% if score > 0 %}
-                            <div class="d-flex align-items-center">
-                                <span class="fw-bold me-2 text-{{ color_class }}">{{ score }}%</span>
-                                <div class="progress flex-grow-1" style="height: 6px;">
-                                    <div class="progress-bar bg-{{ color_class }}" style="width: {{ score }}%;"></div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <small class="text-muted fst-italic">Not Scanned</small>
-                        {% endif %}
-                    </td>
-
-                    <td>
-                        {% if c.strengths %}
-                            <div class="text-truncate text-muted small" style="max-width: 150px;">{{ c.strengths }}</div>
-                        {% else %} - {% endif %}
-                    </td>
-
                     <td class="text-end pe-4">
-                        <button class="btn btn-sm btn-outline-primary rounded-circle me-1" 
-                                data-bs-toggle="modal" data-bs-target="#modal{{ c.id }}" title="View Full Report">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        
-                        <a href="{{ url_for('perform_action', c_id=c.id, action_type='screen') }}" 
-                           class="btn btn-sm btn-primary rounded-pill px-3">Run AI</a>
-                           
-                        <a href="{{ url_for('delete_candidate', c_id=c.id) }}" 
-                           class="btn btn-sm btn-light text-danger rounded-circle ms-1"><i class="bi bi-trash"></i></a>
+                        <a href="{{ url_for('perform_action', c_id=c.id, action_type='SCAN') }}" class="btn btn-sm btn-primary">Analyze</a>
+                        <a href="{{ url_for('delete_candidate', c_id=c.id) }}" class="btn btn-sm btn-outline-danger ms-2"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
-
-                <div class="modal fade" id="modal{{ c.id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content border-0 shadow-lg">
-                            <div class="modal-header">
-                                <h5 class="modal-title fw-bold"><i class="bi bi-person-lines-fill me-2"></i> Candidate Report: {{ c.name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body p-4">
-                                <div class="row g-4">
-                                    <div class="col-md-4 text-center border-end">
-                                        <h6 class="text-muted text-uppercase small fw-bold">Match Confidence</h6>
-                                        <div class="position-relative d-inline-block">
-                                            <svg width="140" height="140" viewBox="0 0 36 36" class="circular-chart text-{{ color_class }}">
-                                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                                <path class="circle" stroke-dasharray="{{ score }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="currentColor" />
-                                            </svg>
-                                            <div class="position-absolute top-50 start-50 translate-middle">
-                                                <span class="fs-2 fw-bold text-dark">{{ score }}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <div class="p-2 rounded bg-light border">
-                                                <small class="d-block text-muted">Ethics Check</small>
-                                                {% if c.ethics_status and "Flagged" in c.ethics_status %}
-                                                    <span class="text-danger fw-bold"><i class="bi bi-flag-fill"></i> Risk Detected</span>
-                                                {% elif c.ethics_status %}
-                                                    <span class="text-success fw-bold"><i class="bi bi-shield-check"></i> Passed</span>
-                                                {% else %}
-                                                    <span class="text-muted">Pending</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-8">
-                                        <h6 class="text-success fw-bold mb-2"><i class="bi bi-check-circle"></i> Key Matches</h6>
-                                        <div class="mb-3">
-                                            {% if c.strengths %}
-                                                {% for s in c.strengths.split(',') %}
-                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success me-1 mb-1">{{ s }}</span>
-                                                {% endfor %}
-                                            {% else %} <span class="text-muted small">No data yet.</span> {% endif %}
-                                        </div>
-
-                                        <h6 class="text-danger fw-bold mb-2"><i class="bi bi-x-circle"></i> Missing / Gaps</h6>
-                                        <div class="mb-3">
-                                            {% if c.missing_skills %}
-                                                {% for m in c.missing_skills.split(',') %}
-                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger me-1 mb-1">{{ m }}</span>
-                                                {% endfor %}
-                                            {% else %} <span class="text-muted small">Analysis pending.</span> {% endif %}
-                                        </div>
-                                        
-                                        <hr>
-                                        
-                                        <h6 class="text-secondary fw-bold mb-2">Next Steps</h6>
-                                        <div class="d-flex gap-2">
-                                            <a href="mailto:{{ c.name|replace(' ', '.') }}@example.com" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-envelope"></i> Email
-                                            </a>
-                                            <button class="btn btn-sm btn-outline-dark" onclick="alert('Invite sent!')">
-                                                <i class="bi bi-calendar-event"></i> Interview
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-secondary" onclick="window.print()">
-                                                <i class="bi bi-printer"></i> Report
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox display-4 d-block mb-3 opacity-25"></i>
+                        No candidates in the pipeline yet.
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
-<script>
-    // 1. Search Function
-    function searchTable() {
-        let input = document.getElementById("searchInput");
-        let filter = input.value.toUpperCase();
-        let table = document.getElementById("candidateTable");
-        let tr = table.getElementsByTagName("tr");
-
-        for (let i = 1; i < tr.length; i++) {
-            let tdName = tr[i].getElementsByTagName("td")[0]; // Name Column
-            let tdRole = tr[i].getElementsByTagName("td")[1]; // Role Column
-            if (tdName || tdRole) {
-                let txtValueName = tdName.textContent || tdName.innerText;
-                let txtValueRole = tdRole.textContent || tdRole.innerText;
-                if (txtValueName.toUpperCase().indexOf(filter) > -1 || txtValueRole.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-
-    // 2. Filter Button Function
-    function filterTable(statusType) {
-        let table = document.getElementById("candidateTable");
-        let tr = table.getElementsByTagName("tr");
-        
-        let buttons = document.querySelectorAll('.btn-group button');
-        buttons.forEach(btn => btn.classList.remove('active', 'btn-secondary'));
-        event.target.classList.add('active', 'btn-secondary');
-
-        for (let i = 1; i < tr.length; i++) {
-            let rowStatus = tr[i].getAttribute("data-status");
-            if (statusType === 'all') {
-                tr[i].style.display = "";
-            } else {
-                if (rowStatus && rowStatus.includes(statusType)) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-</script>
-
 {% endblock %}
